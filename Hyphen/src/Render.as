@@ -25,6 +25,7 @@ package
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.net.URLRequest;
+	import flash.text.TextField;
 	
 	public class Render extends Sprite
 	{
@@ -51,6 +52,24 @@ package
 			renderGUI();
 		}
 		public function renderGUI(){
+			
+			
+			
+			var myText:TextField = new TextField();
+			myText.text = "TEST   ";
+			addChild(myText);
+			
+			myText.border = true;
+			myText.wordWrap = true;
+			myText.width = 200;
+			myText.height = 100;
+			myText.x = 250;
+			myText.y = 300;
+			
+			
+			
+			
+			
 
 			loadImage("assets/images/zoomIn.png");
 			loadImage("assets/images/zoomOut.png");
