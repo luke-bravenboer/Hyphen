@@ -55,7 +55,6 @@ package
 			loadImage("assets/images/zoomIn.png");
 			loadImage("assets/images/zoomOut.png");
 			
-			
 		}
 		public function renderScene(){
 			g.showOrigin=true;
