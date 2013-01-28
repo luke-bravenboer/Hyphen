@@ -65,11 +65,6 @@ package
 			myText.height = 100;
 			myText.x = 250;
 			myText.y = 300;
-			
-			
-			
-			
-			
 
 			loadImage("assets/images/zoomIn.png");
 			loadImage("assets/images/zoomOut.png");
