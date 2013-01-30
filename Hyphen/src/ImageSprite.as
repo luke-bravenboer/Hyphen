@@ -21,22 +21,41 @@ package
 		public var xPos:int;
 		public var yPos:int;
 		public var wid:int;
+		public var hgt:int;
 		private var r:Sprite;
 		
 		public function ImageSprite(){}
 		
 		/**
 		 * Set the position of the sprite relative to the screen.
-		 * (Assumes the sprite is a square.)
+		 * (This one assumes the sprite is a square. Manually setting the
+		 * height is done with setPositionRect().)
 		 * 
 		 * @param x: The x co-ordinate of the leftmost point of the sprite
 		 * @param y: The y co-ordinate of the uppermost point of the sprite
 		 * @param w: The width of the sprite in pixels
 		 */
-		public function setPosition(x:int,y:int,w:int):void{
+		public function setPosition(x:int, y:int, w:int):void{
 			this.xPos=x;
 			this.yPos=y;
 			this.wid=w;
+			this.hgt=w;
+		}
+		
+		/**
+		 * Version of setPosition that does not assume a square, enabling
+		 * the height to be set also.
+		 * 
+		 * @param x: The x co-ordinate of the leftmost point of the sprite
+		 * @param y: The y co-ordinate of the uppermost point of the sprite
+		 * @param w: The width of the sprite in pixels
+		 * @param h: The heightof the sprite in pixels
+		 */
+		public function setPositionRect(x:int, y:int, w:int, h:int):void{
+			this.xPos=x;
+			this.yPos=y;
+			this.wid=w;
+			this.hgt=h;
 		}
 		
 		/**

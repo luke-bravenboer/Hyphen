@@ -46,6 +46,7 @@ package
 		var grass:ImageSprite = new ImageSprite();
 		var myImgLoader:Loader;
 		var coins:TextField = new TextField();
+		var build:ImageSprite = new ImageSprite();
 		
 		public static var myText:TextField = new TextField();
 		
@@ -87,13 +88,19 @@ package
 			zoomOUT.load(this,"assets/images/zoomOut.png");
 			zoomIN.setPosition(349,99,50);
 			zoomIN.load(this,"assets/images/zoomIn.png");
+			//load build image
+			build.addEventListener(MouseEvent.CLICK, beginBuild);
+			build.setPositionRect(25, 301, 100, 50);
+			build.load(this,"assets/images/build.png");
 			
 			scene.render();
 		}
+		
 		public function updateGUI(e:Event){
 			coins.text=""+zoom;
 			scene.render();
 		}
+		
 		public function renderScene(){
 			g.showOrigin=true;
 			scene = new IsoScene();
@@ -144,6 +151,9 @@ package
 			scene.render();
 		}
 		
+		private function beginBuild(e:MouseEvent):void{
+			
+		}
 		
 		//mouse functions
 		private function viewMouseDown(e:Event)
