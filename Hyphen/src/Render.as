@@ -47,6 +47,8 @@ package
 		var myImgLoader:Loader;
 		var coins:TextField = new TextField();
 		
+		public static var myText:TextField = new TextField();
+		
 		public function Render ()
 		{
 			renderScene();
@@ -66,7 +68,7 @@ package
 			addChild(coins);
 			
 			//debug box
-			var myText:TextField = new TextField();
+			myText = new TextField();
 			myText.text = "TEST   ";
 			addChild(myText);
 			myText.border = true;
@@ -124,6 +126,7 @@ package
 		
 		private function imgLoadComplete(e:Event):void
 		{
+			//myText.text = e.target.url.toString();
 			if(e.target.url.toString().substr(e.target.url.toString().length-9) == "grass.png"){
 				var myImg:Bitmap = new Bitmap(e.target.content.bitmapData);
 				for(var i = 0; i < 10; i++){

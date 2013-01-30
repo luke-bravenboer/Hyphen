@@ -40,17 +40,14 @@ package
 		
 		public function imgLoadComplete(e:Event):void
 		{
-			trace(e.target.url.toString());
-			if(e.target.url.toString()==image){
-				bitmap = new Bitmap(e.target.content.bitmapData).bitmapData;
-				if (r==null)return;
-				updatePosition();
-				graphics.beginBitmapFill(bitmap);
-				graphics.drawRect(xPos,yPos,wid,wid);
-				graphics.endFill();
-				r.addChild(this);
-			} 
-			
+			Render.myText.text = e.target.url.toString();
+			bitmap = new Bitmap(e.target.content.bitmapData).bitmapData;
+			if (r==null)return;
+			updatePosition();
+			graphics.beginBitmapFill(bitmap);
+			graphics.drawRect(xPos,yPos,wid,wid);
+			graphics.endFill();
+			r.addChild(this);
 		}
 		
 		
