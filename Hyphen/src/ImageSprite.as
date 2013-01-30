@@ -5,6 +5,7 @@ package
 	import flash.display.Loader;
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.geom.Matrix;
 	import flash.net.URLRequest;
 
 	
@@ -62,7 +63,10 @@ package
 			Render.myText.text = e.target.url.toString();	/*debug*/
 			bitmap = new Bitmap(e.target.content.bitmapData).bitmapData;
 			if (r==null)return;
-			r.drawBitmap(xPos, yPos, wid, hgt, bitmap);
+			var mx:Matrix = new Matrix(1,0,0,1,xPos,yPos);
+			graphics.beginBitmapFill(bitmap,mx);
+			graphics.drawRect(xPos,yPos, bitmap.width, bitmap.height);
+			graphics.endFill();
 			r.addChild(this);
 		}
 	}

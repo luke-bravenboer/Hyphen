@@ -109,13 +109,6 @@ package
 			scene.render();
 		}
 		
-		public function drawBitmap(x:int, y:int, wid:int, hgt:int, bmp:BitmapData):void{
-			var mx:Matrix = new Matrix(1,0,0,1,x,y);
-			graphics.beginBitmapFill(bmp,mx);
-			graphics.drawRect(x,y, bmp.width, bmp.height);
-			graphics.endFill();
-		}
-		
 		public function renderScene():void{
 			g.showOrigin=true;
 			scene = new IsoScene();
