@@ -22,53 +22,75 @@ package
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.events.TimerEvent;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.net.URLRequest;
 	import flash.text.TextField;
+	import flash.utils.Timer;
 	
 	public class Render extends Sprite
 	{
 		//RENDER SHIT
-		private var myRect:IsoRectangle;
 		private var scene:IsoScene;
 		private var panPt:Point;
 		var view:IsoView = new IsoView();
 		private var zoom:Number = 1;
 		var g:IsoGrid = new IsoGrid();
 		private var gridRect:Array = new Array();
+		
+		
 		//GUI SHIT
-		private var guiScene:IsoScene;
-		private var guiView:IsoView = new IsoView();
-		private var zoominData:BitmapData;
-		private var zoomoutData:BitmapData;
-		var zoomIn:Sprite = new Sprite();
-		var zoomOut:Sprite = new Sprite();
+		var zoomIN:ImageSprite = new ImageSprite();
+		var zoomOUT:ImageSprite = new ImageSprite();
+		var grass:ImageSprite = new ImageSprite();
 		var myImgLoader:Loader;
+		var coins:TextField = new TextField();
 		
 		public function Render ()
 		{
 			renderScene();
 			renderGUI();
+			var myTimer:Timer = new Timer(1000); // 1 second
+			myTimer.addEventListener(TimerEvent.TIMER, updateGUI);
+			myTimer.start();
 		}
 		public function renderGUI(){
+			coins.x=100;
+			coins.y=10;
+			coins.border = true;
+			coins.wordWrap = true;
+			coins.width = 100;
+			coins.height = 50;
+			coins.text="OLD";
+			addChild(coins);
 			
-			
-			
+			//debug box
 			var myText:TextField = new TextField();
 			myText.text = "TEST   ";
 			addChild(myText);
-			
 			myText.border = true;
 			myText.wordWrap = true;
 			myText.width = 200;
 			myText.height = 100;
 			myText.x = 250;
 			myText.y = 300;
-
-			loadImage("assets/images/zoomIn.png");
-			loadImage("assets/images/zoomOut.png");
 			
+			
+			//load images
+			//load zoom images
+			zoomOUT.addEventListener(MouseEvent.CLICK,viewZoomOut);
+			zoomIN.addEventListener(MouseEvent.CLICK,viewZoomIn);
+			zoomOUT.setPosition(349,141,50);
+			zoomOUT.load(this,"assets/images/zoomOut.png");
+			zoomIN.setPosition(349,99,50);
+			zoomIN.load(this,"assets/images/zoomIn.png");
+			
+			scene.render();
+		}
+		public function updateGUI(e:Event){
+			coins.text=""+zoom;
+			scene.render();
 		}
 		public function renderScene(){
 			g.showOrigin=true;
@@ -78,20 +100,11 @@ package
 			g.autoUpdate = true;
 			scene.addChild(g);
 			
-			for(var i = 0; i < 10; i++){
-				for(var j = 0; j < 10; j++){
-					var rect : IsoRectangle = new IsoRectangle();
-					rect.stroke=null;
-					rect.setSize(25,25,0);
-					rect.moveTo(i*25, j*25, 0);
-					scene.addChild(rect);
-					gridRect.push(rect);
-				}
-			}
-			
-			loadImage("grass.png");
+			//create ground			
+			loadImage("assets/images/grass.png");
 			
 			
+			//set view
 			view.clipContent = true;
 			view.zoom(0.8);
 			view.y = 0;
@@ -100,8 +113,6 @@ package
 			addChild(view);
 			view.addEventListener(MouseEvent.MOUSE_DOWN, viewMouseDown);
 			view.addEventListener(MouseEvent.MOUSE_WHEEL, viewZoom);
-			zoomOut.addEventListener(MouseEvent.CLICK,viewZoomOut);
-			zoomIn.addEventListener(MouseEvent.CLICK,viewZoomIn);
 			
 		}
 		
@@ -113,36 +124,25 @@ package
 		
 		private function imgLoadComplete(e:Event):void
 		{
-			trace(e.target.url);
-			
 			if(e.target.url.toString().substr(e.target.url.toString().length-9) == "grass.png"){
 				var myImg:Bitmap = new Bitmap(e.target.content.bitmapData);
-				
 				for(var i = 0; i < 10; i++){
 					for(var j = 0; j < 10; j++){
+						var rect : IsoRectangle = new IsoRectangle();
+						rect.stroke=null;
+						rect.setSize(25,25,0);
+						rect.moveTo(i*25, j*25, 0);
+						scene.addChild(rect);
+						gridRect.push(rect);
 						gridRect[i*10+j].fills = [new BitmapFill(myImg, IsoOrientation.XY)];	
 					}
 				}
-			} else if(e.target.url.toString().substr(e.target.url.toString().length-10) == "zoomIn.png"){
-				zoominData = new Bitmap(e.target.content.bitmapData).bitmapData;
-				zoomOut.graphics.moveTo(349,99);
-				zoomIn.graphics.beginBitmapFill(zoominData);
-				zoomIn.graphics.drawRect(349,99,50,50);
-				zoomIn.graphics.endFill();
-				addChild(zoomIn);
-			} else if(e.target.url.toString().substr(e.target.url.toString().length-11) == "zoomOut.png"){
-				zoomoutData = new Bitmap(e.target.content.bitmapData).bitmapData;
-				zoomOut.graphics.moveTo(349,151);
-				zoomOut.graphics.beginBitmapFill(zoomoutData);
-				zoomOut.graphics.drawRect(349,151,50,50);
-				zoomOut.graphics.endFill();
-				addChild(zoomOut);
-			}
+			} 
 			scene.render();
 		}
 		
 		
-		
+		//mouse functions
 		private function viewMouseDown(e:Event)
 		{
 			panPt = new Point(stage.mouseX, stage.mouseY);
@@ -154,7 +154,6 @@ package
 			view.panBy(panPt.x - stage.mouseX, panPt.y - stage.mouseY);
 			panPt.x = stage.mouseX;
 			panPt.y = stage.mouseY;
-			//renderGUI();
 		}
 		private function viewMouseUp(e:Event)
 		{
