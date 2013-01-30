@@ -56,6 +56,10 @@ package
 		private var myImgLoader:Loader;
 		private var coins:TextField = new TextField();
 		private var build:ImageSprite = new ImageSprite();
+		private var blocks:Array = new Array(100);
+		
+		//GLOBAL SHIT
+		private var building:Boolean = false;
 		
 		public static var myText:TextField = new TextField();
 		
@@ -167,11 +171,26 @@ package
 		}
 		
 		private function beginBuild(e:MouseEvent):void{
+			building = true;
+			trace("START BUILDING");
+		}
+		private function place(x:int,y:int){
+			
 			
 		}
-		
 		//mouse functions
 		private function viewMouseDown(e:Event):void{
+			
+			if (building){
+				var pt:Pt = new Pt(e.target.x, e.target.y);
+				var squareSize:int = 25; // 
+				pt = IsoMath.screenToIso(pt);
+				var gridX:int = Math.floor( pt.x / squareSize );
+				var gridY:int = Math.floor( pt.y / squareSize );
+				trace(gridX,gridY,pt.x,pt.y);
+				place(gridX,gridY);
+			}
+			
 			panPt = new Point(stage.mouseX, stage.mouseY);
 			view.addEventListener(MouseEvent.MOUSE_MOVE, viewPan);
 			view.addEventListener(MouseEvent.MOUSE_UP, viewMouseUp);
