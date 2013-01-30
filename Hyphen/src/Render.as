@@ -17,20 +17,29 @@ package
 	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
+	import flash.display.Graphics;
 	import flash.display.Loader;
 	import flash.display.LoaderInfo;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
+	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.net.URLRequest;
 	import flash.text.TextField;
 	import flash.utils.Timer;
 	
+	import flashx.textLayout.tlf_internal;
+	
+	import mx.core.BitmapAsset;
+	
 	public class Render extends Sprite
 	{
+		private static var SCR_WID : int = 400;
+		private static var SCR_HGT : int = 300;
+		
 		//RENDER SHIT
 		private var scene:IsoScene;
 		private var panPt:Point;
@@ -50,8 +59,7 @@ package
 		
 		public static var myText:TextField = new TextField();
 		
-		public function Render ()
-		{
+		public function Render (){
 			renderScene();
 			renderGUI();
 			var myTimer:Timer = new Timer(1000); // 1 second
@@ -84,13 +92,13 @@ package
 			//load zoom images
 			zoomOUT.addEventListener(MouseEvent.CLICK,viewZoomOut);
 			zoomIN.addEventListener(MouseEvent.CLICK,viewZoomIn);
-			zoomOUT.setPosition(349,141,50);
+			zoomOUT.setPosition(SCR_WID-51,SCR_HGT/2-50);
 			zoomOUT.load(this,"assets/images/zoomOut.png");
-			zoomIN.setPosition(349,99,50);
+			zoomIN.setPosition(SCR_WID-51,SCR_HGT/2+50);
 			zoomIN.load(this,"assets/images/zoomIn.png");
 			//load build image
 			build.addEventListener(MouseEvent.CLICK, beginBuild);
-			build.setPositionRect(1, 301, 100, 50);
+			build.setPosition(25, 301);
 			build.load(this,"assets/images/build.png");
 			
 			scene.render();
@@ -99,6 +107,13 @@ package
 		public function updateGUI(e:Event):void{
 			coins.text=""+zoom;
 			scene.render();
+		}
+		
+		public function drawBitmap(x:int, y:int, wid:int, hgt:int, bmp:BitmapData):void{
+			var mx:Matrix = new Matrix(1,0,0,1,x,y);
+			graphics.beginBitmapFill(bmp,mx);
+			graphics.drawRect(x,y, bmp.width, bmp.height);
+			graphics.endFill();
 		}
 		
 		public function renderScene():void{
@@ -117,7 +132,7 @@ package
 			view.clipContent = true;
 			view.zoom(0.8);
 			view.y = 0;
-			view.setSize(400, 300);
+			view.setSize(SCR_WID, SCR_HGT);
 			view.addScene(scene);
 			addChild(view);
 			view.addEventListener(MouseEvent.MOUSE_DOWN, viewMouseDown);

@@ -22,40 +22,19 @@ package
 		public var yPos:int;
 		public var wid:int;
 		public var hgt:int;
-		private var r:Sprite;
+		private var r:Render;
 		
 		public function ImageSprite(){}
 		
 		/**
 		 * Set the position of the sprite relative to the screen.
-		 * (This one assumes the sprite is a square. Manually setting the
-		 * height is done with setPositionRect().)
 		 * 
 		 * @param x: The x co-ordinate of the leftmost point of the sprite
 		 * @param y: The y co-ordinate of the uppermost point of the sprite
-		 * @param w: The width of the sprite in pixels
 		 */
-		public function setPosition(x:int, y:int, w:int):void{
+		public function setPosition(x:int, y:int):void{
 			this.xPos=x;
 			this.yPos=y;
-			this.wid=w;
-			this.hgt=w;
-		}
-		
-		/**
-		 * Version of setPosition that does not assume a square, enabling
-		 * the height to be set also.
-		 * 
-		 * @param x: The x co-ordinate of the leftmost point of the sprite
-		 * @param y: The y co-ordinate of the uppermost point of the sprite
-		 * @param w: The width of the sprite in pixels
-		 * @param h: The heightof the sprite in pixels
-		 */
-		public function setPositionRect(x:int, y:int, w:int, h:int):void{
-			this.xPos=x;
-			this.yPos=y;
-			this.wid=w;
-			this.hgt=h;
 		}
 		
 		/**
@@ -65,7 +44,7 @@ package
 		 * @param url: The location of the image file, local or otherwise. 
 		 */
 		public function load(render:Sprite,url:String):void{
-			r=render;
+			r=render as Render;
 			loadImage(url);
 		}
 		
@@ -83,10 +62,7 @@ package
 			Render.myText.text = e.target.url.toString();	/*debug*/
 			bitmap = new Bitmap(e.target.content.bitmapData).bitmapData;
 			if (r==null)return;
-			graphics.moveTo(xPos,yPos);
-			graphics.beginBitmapFill(bitmap);
-			graphics.drawRect(xPos,yPos,wid,hgt);
-			graphics.endFill();
+			r.drawBitmap(xPos, yPos, wid, hgt, bitmap);
 			r.addChild(this);
 		}
 	}
