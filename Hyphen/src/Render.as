@@ -34,19 +34,19 @@ package
 		//RENDER SHIT
 		private var scene:IsoScene;
 		private var panPt:Point;
-		var view:IsoView = new IsoView();
+		private var view:IsoView = new IsoView();
 		private var zoom:Number = 1;
-		var g:IsoGrid = new IsoGrid();
+		private var g:IsoGrid = new IsoGrid();
 		private var gridRect:Array = new Array();
 		
 		
 		//GUI SHIT
-		var zoomIN:ImageSprite = new ImageSprite();
-		var zoomOUT:ImageSprite = new ImageSprite();
-		var grass:ImageSprite = new ImageSprite();
-		var myImgLoader:Loader;
-		var coins:TextField = new TextField();
-		var build:ImageSprite = new ImageSprite();
+		private var zoomIN:ImageSprite = new ImageSprite();
+		private var zoomOUT:ImageSprite = new ImageSprite();
+		private var grass:ImageSprite = new ImageSprite();
+		private var myImgLoader:Loader;
+		private var coins:TextField = new TextField();
+		private var build:ImageSprite = new ImageSprite();
 		
 		public static var myText:TextField = new TextField();
 		
@@ -58,7 +58,7 @@ package
 			myTimer.addEventListener(TimerEvent.TIMER, updateGUI);
 			myTimer.start();
 		}
-		public function renderGUI(){
+		public function renderGUI():void{
 			coins.x=100;
 			coins.y=10;
 			coins.border = true;
@@ -90,18 +90,18 @@ package
 			zoomIN.load(this,"assets/images/zoomIn.png");
 			//load build image
 			build.addEventListener(MouseEvent.CLICK, beginBuild);
-			build.setPositionRect(25, 301, 100, 50);
+			build.setPositionRect(1, 301, 100, 50);
 			build.load(this,"assets/images/build.png");
 			
 			scene.render();
 		}
 		
-		public function updateGUI(e:Event){
+		public function updateGUI(e:Event):void{
 			coins.text=""+zoom;
 			scene.render();
 		}
 		
-		public function renderScene(){
+		public function renderScene():void{
 			g.showOrigin=true;
 			scene = new IsoScene();
 			g.cellSize = 25;
@@ -136,8 +136,8 @@ package
 			//myText.text = e.target.url.toString();
 			if(e.target.url.toString().substr(e.target.url.toString().length-9) == "grass.png"){
 				var myImg:Bitmap = new Bitmap(e.target.content.bitmapData);
-				for(var i = 0; i < 10; i++){
-					for(var j = 0; j < 10; j++){
+				for(var i:int = 0; i < 10; i++){
+					for(var j:int = 0; j < 10; j++){
 						var rect : IsoRectangle = new IsoRectangle();
 						rect.stroke=null;
 						rect.setSize(25,25,0);
@@ -156,25 +156,21 @@ package
 		}
 		
 		//mouse functions
-		private function viewMouseDown(e:Event)
-		{
+		private function viewMouseDown(e:Event):void{
 			panPt = new Point(stage.mouseX, stage.mouseY);
 			view.addEventListener(MouseEvent.MOUSE_MOVE, viewPan);
 			view.addEventListener(MouseEvent.MOUSE_UP, viewMouseUp);
 		}
-		private function viewPan(e:Event)
-		{
+		private function viewPan(e:Event):void{
 			view.panBy(panPt.x - stage.mouseX, panPt.y - stage.mouseY);
 			panPt.x = stage.mouseX;
 			panPt.y = stage.mouseY;
 		}
-		private function viewMouseUp(e:Event)
-		{
+		private function viewMouseUp(e:Event):void{
 			view.removeEventListener(MouseEvent.MOUSE_MOVE, viewPan);
 			view.removeEventListener(MouseEvent.MOUSE_UP, viewMouseUp);
 		}
-		private function viewZoom(e:MouseEvent)
-		{
+		private function viewZoom(e:MouseEvent):void{
 			if(e.delta > 0 && zoom<2)
 			{
 				zoom +=  0.10;
@@ -185,16 +181,14 @@ package
 			}
 			view.currentZoom = zoom;
 		}
-		private function viewZoomIn(e:MouseEvent)
-		{
+		private function viewZoomIn(e:MouseEvent):void{
 			if(zoom<2)
 			{
 				zoom +=  0.10;
 			}
 			view.currentZoom = zoom;
 		}
-		private function viewZoomOut(e:MouseEvent)
-		{
+		private function viewZoomOut(e:MouseEvent):void{
 			if( zoom>0.3)
 			{
 				zoom -=  0.10;

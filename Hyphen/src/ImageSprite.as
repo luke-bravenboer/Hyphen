@@ -85,7 +85,7 @@ package
 			if (r==null)return;
 			graphics.moveTo(xPos,yPos);
 			graphics.beginBitmapFill(bitmap);
-			graphics.drawRect(xPos,yPos,wid,wid);
+			graphics.drawRect(xPos,yPos,wid,hgt);
 			graphics.endFill();
 			r.addChild(this);
 		}
