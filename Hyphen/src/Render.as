@@ -194,8 +194,9 @@ package
 			buildingSprite.setSize(gridWidth,gridWidth,0);
 			buildingSprite.moveTo(x*gridWidth-gridWidth,y*gridWidth,1);
 			scene.addChild(buildingSprite);
-			buildingGrid[y*gridSize+x]=buildingSprite;
+			//buildingGrid[y*gridSize+x]=buildingSprite;
 			trace (x,y);
+			//set to true to enable one build. debug mode.
 			//building=false;
 			scene.render();
 		}

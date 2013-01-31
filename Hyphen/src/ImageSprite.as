@@ -39,6 +39,12 @@ package
 			this.xPos=x;
 			this.yPos=y;
 		}
+		/**
+		 * Set the width of the shape to be overriden to. Resizes when loaded.
+		 * 
+		 * @param w: Width
+		 * @param h: currently not needed but there for later incase of double resizing needed
+		 */
 		public function overrideSize(w:int,h:int){
 			overrideS=true;
 			wid=w;
@@ -74,6 +80,7 @@ package
 			if (!overrideS)
 			graphics.drawRect(xPos,yPos, bitmap.width, bitmap.height);
 			else{
+				//resizes image if overrideS is true
 				var scale:Number = wid/bitmap.width;
 				var matrix:Matrix = new Matrix();
 				matrix.scale(scale, scale);
