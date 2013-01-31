@@ -41,6 +41,7 @@ package
 		private static var SCR_WID : int = 400;
 		private static var SCR_HGT : int = 300;
 		private static var gridSize:int = 10;
+		private static var gridWidth:int = 25;
 		
 		//IMAGES
 		private var garage:ImageSprite = new ImageSprite();
@@ -70,6 +71,8 @@ package
 		public static var myText:TextField = new TextField();
 		
 		public function Render (){
+			stage.nativeWindow.height=800;
+			stage.nativeWindow.width=1000;
 			renderScene();
 			renderGUI();
 			var myTimer:Timer = new Timer(1000); // 1 second
@@ -124,7 +127,8 @@ package
 		}
 		
 		public function renderScene():void{
-			
+			//load buildings images
+			garage.overrideSize(50,50);
 			garage.load(null,"assets/images/garage.png");
 			
 			
@@ -181,19 +185,18 @@ package
 		
 		private function beginBuild(e:MouseEvent):void{
 			building = true;
-			trace("START BUILDING");
 		}
 		private function place(x:int,y:int){
 			//TODO - MAKE IT PLACE BUILDING AT POSITION
 			
-			var build:IsoSprite = new IsoSprite();
-			build.sprites = [garage.bitmap];
-			build.setSize(25,25,0);
-			build.moveTo(0,0,0);
-			scene.addChild(build);
-			buildingGrid[y*gridSize+x]=build;
-			trace("PLACED");
-			building=false;
+			var buildingSprite:IsoSprite = new IsoSprite();
+			buildingSprite.sprites = [garage.bitmap];
+			buildingSprite.setSize(gridWidth,gridWidth,0);
+			buildingSprite.moveTo(x*gridWidth-gridWidth,y*gridWidth,1);
+			scene.addChild(buildingSprite);
+			buildingGrid[y*gridSize+x]=buildingSprite;
+			trace (x,y);
+			//building=false;
 			scene.render();
 		}
 		private function buildDragEffect(){
@@ -210,7 +213,7 @@ package
 				pt = IsoMath.screenToIso(pt);
 				var gridX:int = Math.floor( pt.x / squareSize );
 				var gridY:int = Math.floor( pt.y / squareSize );
-				trace(gridX,gridY,pt.x,pt.y);
+				
 				place(gridX,gridY);
 			}
 			

@@ -3,6 +3,7 @@ package
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.Loader;
+	import flash.display.PixelSnapping;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.geom.Matrix;
@@ -24,6 +25,7 @@ package
 		public var wid:int;
 		public var hgt:int;
 		private var r:Render;
+		private var overrideS:Boolean=false;
 		
 		public function ImageSprite(){}
 		
@@ -37,7 +39,11 @@ package
 			this.xPos=x;
 			this.yPos=y;
 		}
-		
+		public function overrideSize(w:int,h:int){
+			overrideS=true;
+			wid=w;
+			hgt=h;
+		}
 		/**
 		 * Begin loading of the image, given the specified url.
 		 * 
@@ -62,11 +68,22 @@ package
 		private function imgLoadComplete(e:Event):void{
 			Render.myText.text = e.target.url.toString();	/*debug*/
 			bitmap = new Bitmap(e.target.content.bitmapData).bitmapData;
-			if (r==null)return;
+			
 			var mx:Matrix = new Matrix(1,0,0,1,xPos,yPos);
 			graphics.beginBitmapFill(bitmap,mx);
+			if (!overrideS)
 			graphics.drawRect(xPos,yPos, bitmap.width, bitmap.height);
+			else{
+				var scale:Number = wid/bitmap.width;
+				var matrix:Matrix = new Matrix();
+				matrix.scale(scale, scale);
+				var smallBMD:BitmapData = new BitmapData(bitmap.width * scale, bitmap.height * scale, true, 0x000000);
+				smallBMD.draw(bitmap, matrix, null, null, null, true);
+				bitmap = new Bitmap(smallBMD, PixelSnapping.NEVER, true).bitmapData;
+				graphics.drawRect(xPos,yPos, bitmap.width, bitmap.height);
+			}
 			graphics.endFill();
+			if (r==null)return;
 			r.addChild(this);
 		}
 	}
