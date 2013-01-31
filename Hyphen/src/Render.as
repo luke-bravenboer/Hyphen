@@ -1,6 +1,7 @@
 package
 {       
 	import as3isolib.core.IIsoDisplayObject;
+	import as3isolib.display.IsoSprite;
 	import as3isolib.display.IsoView;
 	import as3isolib.display.primitive.IsoBox;
 	import as3isolib.display.primitive.IsoRectangle;
@@ -39,6 +40,11 @@ package
 	{
 		private static var SCR_WID : int = 400;
 		private static var SCR_HGT : int = 300;
+		private static var gridSize:int = 10;
+		
+		//IMAGES
+		private var garage:ImageSprite = new ImageSprite();
+		
 		
 		//RENDER SHIT
 		private var scene:IsoScene;
@@ -47,6 +53,7 @@ package
 		private var zoom:Number = 1;
 		private var g:IsoGrid = new IsoGrid();
 		private var gridRect:Array = new Array();
+		private var buildingGrid:Array  = new Array(100);
 		
 		
 		//GUI SHIT
@@ -56,7 +63,6 @@ package
 		private var myImgLoader:Loader;
 		private var coins:TextField = new TextField();
 		private var build:ImageSprite = new ImageSprite();
-		private var blocks:Array = new Array(100);
 		
 		//GLOBAL SHIT
 		private var building:Boolean = false;
@@ -71,6 +77,9 @@ package
 			myTimer.start();
 		}
 		public function renderGUI():void{
+			
+			
+			
 			coins.x=100;
 			coins.y=10;
 			coins.border = true;
@@ -111,13 +120,20 @@ package
 		public function updateGUI(e:Event):void{
 			coins.text=""+zoom;
 			scene.render();
+			if (building)buildDragEffect();
 		}
 		
 		public function renderScene():void{
+			
+			garage.load(null,"assets/images/garage.png");
+			
+			
+			
+			
 			g.showOrigin=true;
 			scene = new IsoScene();
 			g.cellSize = 25;
-			g.setGridSize(10,10,0);
+			g.setGridSize(gridSize,gridSize,0);
 			g.autoUpdate = true;
 			scene.addChild(g);
 			
@@ -168,6 +184,20 @@ package
 			trace("START BUILDING");
 		}
 		private function place(x:int,y:int){
+			//TODO - MAKE IT PLACE BUILDING AT POSITION
+			
+			var build:IsoSprite = new IsoSprite();
+			build.sprites = [garage.bitmap];
+			build.setSize(25,25,0);
+			build.moveTo(0,0,0);
+			scene.addChild(build);
+			buildingGrid[y*gridSize+x]=build;
+			trace("PLACED");
+			building=false;
+			scene.render();
+		}
+		private function buildDragEffect(){
+			
 			
 			
 		}
