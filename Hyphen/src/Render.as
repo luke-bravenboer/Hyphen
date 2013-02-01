@@ -29,6 +29,7 @@ package
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.net.URLRequest;
+	import flash.system.LoaderContext;
 	import flash.text.TextField;
 	import flash.utils.Timer;
 	
@@ -38,10 +39,10 @@ package
 	
 	public class Render extends Sprite
 	{
-		private static var SCR_WID : int = 400;
-		private static var SCR_HGT : int = 300;
+		private static var SCR_WID : int = 480;
+		private static var SCR_HGT : int = 320;
 		private static var gridSize:int = 10;
-		private static var gridWidth:int = 25;
+		private static var gridWidth:int = 75;
 		
 		//IMAGES
 		private var garage:ImageSprite = new ImageSprite();
@@ -80,9 +81,6 @@ package
 			myTimer.start();
 		}
 		public function renderGUI():void{
-			
-			
-			
 			coins.x=100;
 			coins.y=10;
 			coins.border = true;
@@ -114,10 +112,11 @@ package
 			zoomIN.load(this,"assets/images/zoomIn.png");
 			//load build image
 			build.addEventListener(MouseEvent.CLICK, beginBuild);
-			build.setPosition(25, 301);
+			build.setPosition(25, SCR_HGT+1);
 			build.load(this,"assets/images/build.png");
 			
 			scene.render();
+			scene.layoutEnabled = false;
 		}
 		
 		public function updateGUI(e:Event):void{
@@ -128,15 +127,12 @@ package
 		
 		public function renderScene():void{
 			//load buildings images
-			garage.overrideSize(50,50);
-			garage.load(null,"assets/images/garage.png");
-			
-			
-			
+			garage.overrideSize(gridWidth*2,gridWidth*2);
+			garage.load(null,"assets/images/garageEdit.png");
 			
 			g.showOrigin=true;
 			scene = new IsoScene();
-			g.cellSize = 25;
+			g.cellSize = gridWidth;
 			g.setGridSize(gridSize,gridSize,0);
 			g.autoUpdate = true;
 			scene.addChild(g);
@@ -146,12 +142,15 @@ package
 			
 			
 			//set view
-			view.clipContent = true;
-			view.zoom(0.8);
-			view.y = 0;
+			//view.clipContent = true;
+			//view.zoom(1);
 			view.setSize(SCR_WID, SCR_HGT);
+			//view.panTo(0,0);
+			/*view.x = 0;
+			view.y = 0;*/
 			view.addScene(scene);
 			addChild(view);
+			view.addEventListener(MouseEvent.CLICK, viewMouseClick);
 			view.addEventListener(MouseEvent.MOUSE_DOWN, viewMouseDown);
 			view.addEventListener(MouseEvent.MOUSE_WHEEL, viewZoom);
 			
@@ -159,7 +158,7 @@ package
 		
 		private function loadImage(url:String):void{
 			var loader : Loader = new Loader();
-			loader.load(new URLRequest(url));
+			loader.load(new URLRequest(url), new LoaderContext(true));
 			loader.contentLoaderInfo.addEventListener(Event.COMPLETE, imgLoadComplete);
 		}
 		
@@ -171,9 +170,9 @@ package
 				for(var i:int = 0; i < 10; i++){
 					for(var j:int = 0; j < 10; j++){
 						var rect : IsoRectangle = new IsoRectangle();
-						rect.stroke=null;
-						rect.setSize(25,25,0);
-						rect.moveTo(i*25, j*25, 0);
+						//rect.stroke=null;
+						rect.setSize(gridWidth,gridWidth,0);
+						rect.moveTo(i*gridWidth, j*gridWidth, 0);
 						scene.addChild(rect);
 						gridRect.push(rect);
 						gridRect[i*10+j].fills = [new BitmapFill(myImg, IsoOrientation.XY)];	
@@ -186,13 +185,16 @@ package
 		private function beginBuild(e:MouseEvent):void{
 			building = true;
 		}
+		
 		private function place(x:int,y:int){
 			//TODO - MAKE IT PLACE BUILDING AT POSITION
 			
 			var buildingSprite:IsoSprite = new IsoSprite();
 			buildingSprite.sprites = [garage.bitmap];
-			buildingSprite.setSize(gridWidth,gridWidth,0);
-			buildingSprite.moveTo(x*gridWidth-gridWidth,y*gridWidth,1);
+			buildingSprite.container.mouseEnabled = false;
+			buildingSprite.container.mouseChildren = false;
+			//buildingSprite.setSize(gridWidth,gridWidth,0);
+			buildingSprite.moveTo(x*gridWidth-17*(gridWidth/25),y*gridWidth+9*(gridWidth/25),1);
 			scene.addChild(buildingSprite);
 			//buildingGrid[y*gridSize+x]=buildingSprite;
 			trace (x,y);
@@ -200,37 +202,44 @@ package
 			//building=false;
 			scene.render();
 		}
+		
 		private function buildDragEffect(){
 			
 			
 			
 		}
+		
 		//mouse functions
 		private function viewMouseDown(e:Event):void{
-			
+			panPt = new Point(stage.mouseX, stage.mouseY);
+			view.addEventListener(MouseEvent.MOUSE_MOVE, viewPan);
+			view.addEventListener(MouseEvent.MOUSE_UP, viewMouseUp);
+		}
+		
+		private function viewMouseClick(e:Event):void{
 			if (building){
 				var pt:Pt = new Pt(e.target.x, e.target.y);
-				var squareSize:int = 25; // 
+				//trace("ptx="+pt.x+", pty="+pt.y);
+				var squareSize:int = gridWidth; // 
 				pt = IsoMath.screenToIso(pt);
 				var gridX:int = Math.floor( pt.x / squareSize );
 				var gridY:int = Math.floor( pt.y / squareSize );
 				
 				place(gridX,gridY);
 			}
-			
-			panPt = new Point(stage.mouseX, stage.mouseY);
-			view.addEventListener(MouseEvent.MOUSE_MOVE, viewPan);
-			view.addEventListener(MouseEvent.MOUSE_UP, viewMouseUp);
 		}
+		
 		private function viewPan(e:Event):void{
 			view.panBy(panPt.x - stage.mouseX, panPt.y - stage.mouseY);
 			panPt.x = stage.mouseX;
 			panPt.y = stage.mouseY;
 		}
+		
 		private function viewMouseUp(e:Event):void{
 			view.removeEventListener(MouseEvent.MOUSE_MOVE, viewPan);
 			view.removeEventListener(MouseEvent.MOUSE_UP, viewMouseUp);
 		}
+		
 		private function viewZoom(e:MouseEvent):void{
 			if(e.delta > 0 && zoom<2)
 			{
@@ -242,6 +251,7 @@ package
 			}
 			view.currentZoom = zoom;
 		}
+		
 		private function viewZoomIn(e:MouseEvent):void{
 			if(zoom<2)
 			{
@@ -249,6 +259,7 @@ package
 			}
 			view.currentZoom = zoom;
 		}
+		
 		private function viewZoomOut(e:MouseEvent):void{
 			if( zoom>0.3)
 			{
@@ -256,6 +267,7 @@ package
 			}
 			view.currentZoom = zoom;
 		}
+		
 		private function enterFrameHandler (evt:Event):void
 		{
 			

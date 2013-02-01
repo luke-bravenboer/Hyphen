@@ -8,6 +8,7 @@ package
 	import flash.events.Event;
 	import flash.geom.Matrix;
 	import flash.net.URLRequest;
+	import flash.system.LoaderContext;
 
 	
 	/**
@@ -63,7 +64,7 @@ package
 		
 		private function loadImage(url:String):void{
 			var loader : Loader = new Loader();
-			loader.load(new URLRequest(url));
+			loader.load(new URLRequest(url), new LoaderContext(true));
 			loader.contentLoaderInfo.addEventListener(Event.COMPLETE, imgLoadComplete);
 		}
 		
