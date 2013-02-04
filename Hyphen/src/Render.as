@@ -100,10 +100,10 @@ package
 			addChild(myText);
 			myText.border = true;
 			myText.wordWrap = true;
-			myText.width = 200;
-			myText.height = 100;
-			myText.x = 250;
-			myText.y = 300;
+			myText.width = 150;
+			myText.height = 80;
+			myText.x = SCR_WID-150;
+			myText.y = SCR_HGT+1;
 			
 			
 			//load images
@@ -158,7 +158,7 @@ package
 			view.addEventListener(MouseEvent.CLICK, viewMouseClick);
 			view.addEventListener(MouseEvent.MOUSE_DOWN, viewMouseDown);
 			view.addEventListener(MouseEvent.MOUSE_WHEEL, viewZoom);
-			
+			view.panTo(0,250);
 		}
 		
 		private function loadImage(url:String):void{
@@ -191,7 +191,7 @@ package
 			building = true;
 		}
 		
-		private function place(x:int,y:int){
+		private function place(x:int,y:int):void{
 			//TODO - MAKE IT PLACE BUILDING AT POSITION
 			
 			var buildingSprite:IsoSprite = new IsoSprite();
@@ -208,7 +208,7 @@ package
 			scene.render();
 		}
 		
-		private function buildDragEffect(){
+		private function buildDragEffect():void{
 			
 			
 			
