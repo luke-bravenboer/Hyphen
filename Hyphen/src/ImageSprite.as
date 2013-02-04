@@ -64,7 +64,7 @@ package
 		
 		private function loadImage(url:String):void{
 			var loader : Loader = new Loader();
-			loader.load(new URLRequest(url), new LoaderContext(true));
+			loader.load(new URLRequest(url), new LoaderContext(false));
 			loader.contentLoaderInfo.addEventListener(Event.COMPLETE, imgLoadComplete);
 		}
 		

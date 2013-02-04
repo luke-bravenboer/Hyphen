@@ -30,6 +30,7 @@ package
 	import flash.geom.Rectangle;
 	import flash.net.URLRequest;
 	import flash.system.LoaderContext;
+	import flash.system.Security;
 	import flash.text.TextField;
 	import flash.utils.Timer;
 	
@@ -52,7 +53,7 @@ package
 		private var scene:IsoScene;
 		private var panPt:Point;
 		private var view:IsoView = new IsoView();
-		private var zoom:Number = 1;
+		private var zoom:Number = 0.5;
 		private var g:IsoGrid = new IsoGrid();
 		private var gridRect:Array = new Array();
 		private var buildingGrid:Array  = new Array(100);
@@ -72,8 +73,11 @@ package
 		public static var myText:TextField = new TextField();
 		
 		public function Render (){
-			stage.nativeWindow.height=800;
-			stage.nativeWindow.width=1000;
+			Security.loadPolicyFile("crossdomain.xml");
+			try{		
+				stage.nativeWindow.height=800;
+				stage.nativeWindow.width=1000;
+			}catch(error:Error){}
 			renderScene();
 			renderGUI();
 			var myTimer:Timer = new Timer(1000); // 1 second
@@ -130,7 +134,7 @@ package
 			garage.overrideSize(gridWidth*2,gridWidth*2);
 			garage.load(null,"assets/images/garageEdit.png");
 			
-			g.showOrigin=true;
+			g.showOrigin=false;
 			scene = new IsoScene();
 			g.cellSize = gridWidth;
 			g.setGridSize(gridSize,gridSize,0);
@@ -138,12 +142,13 @@ package
 			scene.addChild(g);
 			
 			//create ground			
-			loadImage("assets/images/grass.png");
+			loadImage("assets/images/tileable.png");
 			
 			
 			//set view
 			//view.clipContent = true;
-			//view.zoom(1);
+			view.zoom(zoom);
+			view.currentZoom = zoom;
 			view.setSize(SCR_WID, SCR_HGT);
 			//view.panTo(0,0);
 			/*view.x = 0;
@@ -165,12 +170,12 @@ package
 		private function imgLoadComplete(e:Event):void
 		{
 			//myText.text = e.target.url.toString();
-			if(e.target.url.toString().substr(e.target.url.toString().length-9) == "grass.png"){
+			if(e.target.url.toString().substr(e.target.url.toString().length-12) == "tileable.png"){
 				var myImg:Bitmap = new Bitmap(e.target.content.bitmapData);
 				for(var i:int = 0; i < 10; i++){
 					for(var j:int = 0; j < 10; j++){
 						var rect : IsoRectangle = new IsoRectangle();
-						//rect.stroke=null;
+						rect.stroke=null;
 						rect.setSize(gridWidth,gridWidth,0);
 						rect.moveTo(i*gridWidth, j*gridWidth, 0);
 						scene.addChild(rect);
@@ -230,7 +235,7 @@ package
 		}
 		
 		private function viewPan(e:Event):void{
-			view.panBy(panPt.x - stage.mouseX, panPt.y - stage.mouseY);
+			view.panBy((panPt.x - stage.mouseX)/zoom, (panPt.y - stage.mouseY)/zoom);
 			panPt.x = stage.mouseX;
 			panPt.y = stage.mouseY;
 		}
